@@ -6,13 +6,14 @@ import { Circles } from "react-loader-spinner";
 function App() {
   const [modelResponse, setModelResponse] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(-1);
+  const [keywords, setKeywords] = useState("");
+  const [numberOfWords, setNumberOfWords] = useState(600);
 
   const chatConfig = {
     model: "mistral",
     role: "user",
-    content:
-      "Write a 6000 character long essay about the Danube, containing interesting facts and famous history events",
+    content: `Write a ${numberOfWords} words long essay about the Danube and talk about the following keywords: ${keywords}`,
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,8 +28,9 @@ function App() {
         messages: [{ role: props.role, content: props.content }],
       });
       console.log(`${response.message.content}\n`);
+      const lastPoz = modelResponse.length;
       setModelResponse([...modelResponse, response.message.content]);
-      setPage(page + 1);
+      setPage(lastPoz);
     } catch (error) {
       console.log(`Query failed!`);
       console.log(error);
@@ -40,6 +42,7 @@ function App() {
     setLoading(true);
     await invokeLLM(chatConfig);
     setLoading(false);
+    console.log(keywords);
     /*const a = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
       mode: "cors",
@@ -66,7 +69,41 @@ function App() {
   return (
     <>
       <h1>Duna essay writer</h1>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "16px",
+          width: "100%",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <h3 style={{ margin: "0px" }}>Keywords:</h3>
+            <input
+              style={{ borderRadius: "10px", fontSize: "20px", height: "40px" }}
+              value={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+            />
+          </div>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <h3 style={{ margin: "0px" }}>Number of words:</h3>
+            <input
+              type="number"
+              style={{
+                borderRadius: "10px",
+                fontSize: "20px",
+                height: "40px",
+                width: "100px",
+              }}
+              value={numberOfWords}
+              onChange={(e) => setNumberOfWords(Number(e.target.value))}
+            />
+          </div>
+        </div>
         <button disabled={loading} onClick={onGenerateClick}>
           Generate essay
         </button>
@@ -90,6 +127,7 @@ function App() {
             display: "flex",
             width: "100%",
             justifyContent: "space-between",
+            marginTop: "16px",
           }}
         >
           <button disabled={page === 0} onClick={prevResponse}>
@@ -106,10 +144,21 @@ function App() {
       {modelResponse.length > 0 ? (
         <>
           <h3>Response</h3>
-          <p>{modelResponse[page]}</p>
+          <pre
+            style={{
+              whiteSpace: "pre-wrap",
+              textAlign: "left",
+              fontFamily: "cursive",
+              fontSize: "20px",
+            }}
+          >
+            {modelResponse[page]}
+          </pre>
         </>
       ) : (
-        <p>Press the button to generate an essay about the Danube</p>
+        !loading && (
+          <p>Press the button to generate an essay about the Danube</p>
+        )
       )}
     </>
   );
