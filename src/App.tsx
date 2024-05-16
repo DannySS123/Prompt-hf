@@ -67,7 +67,7 @@ function App() {
   };
 
   return (
-    <>
+    <div>
       <h1>Duna essay writer</h1>
       <div
         style={{
@@ -80,8 +80,8 @@ function App() {
           width: "100%",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
             <h3 style={{ margin: "0px" }}>Keywords:</h3>
             <input
               style={{ borderRadius: "10px", fontSize: "20px", height: "40px" }}
@@ -89,7 +89,7 @@ function App() {
               onChange={(e) => setKeywords(e.target.value)}
             />
           </div>
-          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
             <h3 style={{ margin: "0px" }}>Number of words:</h3>
             <input
               type="number"
@@ -160,7 +160,7 @@ function App() {
           <p>Press the button to generate an essay about the Danube</p>
         )
       )}
-    </>
+    </div>
   );
 }
 
